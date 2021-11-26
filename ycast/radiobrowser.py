@@ -1,4 +1,6 @@
+import base64
 import requests
+import uuid
 import logging
 
 from ycast import __version__
@@ -11,6 +13,7 @@ MINIMUM_COUNT_COUNTRY = 5
 MINIMUM_COUNT_LANGUAGE = 5
 DEFAULT_STATION_LIMIT = 200
 SHOW_BROKEN_STATIONS = False
+COMPRESS_UUID = True
 ID_PREFIX = "RB"
 
 
@@ -23,7 +26,10 @@ def get_json_attr(json, attr):
 
 class Station:
     def __init__(self, station_json):
-        self.id = generic.generate_stationid_with_prefix(get_json_attr(station_json, 'stationuuid'), ID_PREFIX)
+        uid = get_json_attr(station_json, 'stationuuid')
+        if (COMPRESS_UUID):
+            uid = base64.urlsafe_b64encode(uuid.UUID(uid).bytes).decode()
+        self.id = generic.generate_stationid_with_prefix(uid, ID_PREFIX)        
         self.name = get_json_attr(station_json, 'name')
         self.url = get_json_attr(station_json, 'url')
         self.icon = get_json_attr(station_json, 'favicon')
@@ -61,6 +67,8 @@ def request(url):
 
 
 def get_station_by_id(uid):
+    if (COMPRESS_UUID):
+        uid = uuid.UUID(base64.urlsafe_b64decode(uid).hex())
     station_json = request('stations/byuuid/' + str(uid))
     if station_json and len(station_json):
         return Station(station_json[0])
