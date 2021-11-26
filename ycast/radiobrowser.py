@@ -81,7 +81,7 @@ def get_country_directories():
     country_directories = []
     apicall = 'countries'
     if not SHOW_BROKEN_STATIONS:
-        apicall += '?hidebroken=true'
+        apicall += '?hidebroken=true&is_https=false'
     countries_raw = request(apicall)
     for country_raw in countries_raw:
         if get_json_attr(country_raw, 'name') and get_json_attr(country_raw, 'stationcount') and \
@@ -95,7 +95,7 @@ def get_language_directories():
     language_directories = []
     apicall = 'languages'
     if not SHOW_BROKEN_STATIONS:
-        apicall += '?hidebroken=true'
+        apicall += '?hidebroken=true&is_https=false'
     languages_raw = request(apicall)
     for language_raw in languages_raw:
         if get_json_attr(language_raw, 'name') and get_json_attr(language_raw, 'stationcount') and \
@@ -110,7 +110,7 @@ def get_genre_directories():
     genre_directories = []
     apicall = 'tags'
     if not SHOW_BROKEN_STATIONS:
-        apicall += '?hidebroken=true'
+        apicall += '?hidebroken=true&is_https=false'
     genres_raw = request(apicall)
     for genre_raw in genres_raw:
         if get_json_attr(genre_raw, 'name') and get_json_attr(genre_raw, 'stationcount') and \
